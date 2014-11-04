@@ -8,14 +8,20 @@
     </head>
     <body>
         <h1>Carte Google Map</h1>
-        <div id="map-canvas"></div>
-        <table>
-            <tr>
-                <td><label for="latitude">Latitude</label></td><td> : <input id="latitude" type="text"/><br /></td>
-            </tr>
-            <tr>
-                <td><label for="longitude">Longitude</label></td><td> : <input id="longitude" type="text"/></td>
-            </tr>
-        </table>
+        <input type="button" onclick="deleteMarkers();" value="Supprimer les points"/>
+        <div class="divMap">
+            <div id="map-canvas" class="map"></div>
+            <table id="markersT" cellspacing='0' class="markersTable">
+                <thead>
+                    <tr>
+                        <th>N</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </body>
 </html>
