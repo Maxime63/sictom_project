@@ -16,12 +16,17 @@ var mapOptions = {
     zoom: 10
 };
 
+var lineSymbol = {
+    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+};
+
 //Option pour dessiner le chemin.
 var fullPathOptions = {
-    strokeColor: '#000000',
-    strokeOpacity: 1.0,
-    strokeWeight: 3
-};
+    icons: [{
+      icon: lineSymbol,
+      offset: '100%'
+    }]
+}
 
 //évènement au chargement de la page.
 google.maps.event.addDomListener(window, 'load', initialize);
