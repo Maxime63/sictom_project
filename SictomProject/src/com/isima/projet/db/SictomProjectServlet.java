@@ -50,6 +50,9 @@ public class SictomProjectServlet extends HttpServlet {
 			else if(action.equals("get"))
 			{
 				System.out.println("GET");
+				long id = Long.parseLong(req.getParameter("id"));
+				TCoordonnee c = getCoordonnee(id);
+				resp.getWriter().println("Coordonnée : " + c.getLatitude() + " " + c.getLongitude() + " " + c.getDate_enregistrement());
 			}
 			else if(action.equals("getall"))
 			{
@@ -59,6 +62,20 @@ public class SictomProjectServlet extends HttpServlet {
 					resp.getWriter().println(c.getLatitude() + " " + c.getLongitude() + " " + c.getDate_enregistrement());
 				}
 				System.out.println("GET ALL");
+			}
+			else if(action.equals("delete"))
+			{
+				System.out.println("DELETE");
+				long id = Long.parseLong(req.getParameter("id"));
+				try
+				{
+				boolean res = deleteCoord(id);
+				if(res)
+					resp.getWriter().println("Coordonnée supprimée");
+				}catch(EntityNotFoundException e)
+				{
+					resp.getWriter().println("Coordonnée inexistante");
+				}
 			}
 		}
 		
@@ -108,8 +125,8 @@ public class SictomProjectServlet extends HttpServlet {
 		Key key = KeyFactory.createKey(ConstantesMetier.ENTITY_TCOORDONNEE, id);
 		try {
 			Entity auteur = datastoreService.get(key);
-			double longitude = Double.parseDouble((String) auteur.getProperty(ConstantesMetier.ENTITY_TCOORDONNEE_LONGITUDE));			
-			double latitude = Double.parseDouble((String) auteur.getProperty(ConstantesMetier.ENTITY_TCOORDONNEE_LATITUDE));			
+			double longitude = (Double) auteur.getProperty(ConstantesMetier.ENTITY_TCOORDONNEE_LONGITUDE);			
+			double latitude = (Double) auteur.getProperty(ConstantesMetier.ENTITY_TCOORDONNEE_LATITUDE);			
 			Date date = (Date) auteur.getProperty(ConstantesMetier.ENTITY_TCOODONNEE_DATE);
 			newCoord = new TCoordonnee(auteur.getKey().getId(), longitude, latitude, date);
 		} catch (EntityNotFoundException e) {
@@ -124,11 +141,11 @@ public class SictomProjectServlet extends HttpServlet {
 	 * 
 	 * Pour l'instant return 0 si ok -1 si ko
 	 */
-	public boolean deleteCoord(long id)
+	public boolean deleteCoord(long id) throws EntityNotFoundException
 	{
 		boolean res = false;
 		Key coordKey = KeyFactory.createKey(ConstantesMetier.ENTITY_TCOORDONNEE, id);
-		if(coordKey.isComplete())
+		if(datastoreService.get(coordKey) != null)
 		{	
 			datastoreService.delete(coordKey);
 			res = true;
