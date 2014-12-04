@@ -31,7 +31,9 @@ dependencies {
 appengine {
     downloadSdk = true
     appcfg {
+        email = "chauvet.savajol.projet.sictom@gmail.com"
         oauth2 = true
+        noCookies = true
     }
     endpoints {
         getClientLibsOnBuild = true
