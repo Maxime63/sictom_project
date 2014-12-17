@@ -1,0 +1,58 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="749" measuredH="580" mockupW="282" mockupH="549">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::iPhone" x="467" y="31" w="282" h="549" measuredW="282" measuredH="573" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <model>IPhone5</model>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::TextInput" x="609" y="220" w="-1" h="-1" measuredW="79" measuredH="26" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::TextInput" x="609" y="261" w="-1" h="-1" measuredW="79" measuredH="26" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Label" x="521" y="223" w="80" h="-1" measuredW="67" measuredH="21" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>3480693</color>
+        <text>Identifiant%20%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::Label" x="506" y="264" w="-1" h="-1" measuredW="88" measuredH="21" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>3480693</color>
+        <text>Mot%20de%20passe%20%3A</text>
+      </controlProperties>
+    </control>
+    <control controlID="7" controlTypeID="com.balsamiq.mockups::Button" x="576" y="403" w="-1" h="-1" measuredW="65" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>3480693</color>
+        <menuIcon>false</menuIcon>
+        <text>Quitter</text>
+      </controlProperties>
+    </control>
+    <control controlID="8" controlTypeID="com.balsamiq.mockups::Label" x="544" y="155" w="-1" h="-1" measuredW="132" measuredH="32" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <color>3480693</color>
+        <size>24</size>
+        <text>Sictom%20App</text>
+      </controlProperties>
+    </control>
+    <control controlID="13" controlTypeID="com.balsamiq.mockups::Image" x="531" y="316" w="154" h="66" measuredW="165" measuredH="76" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./assets/LOGO.png</src>
+        <text/>
+      </controlProperties>
+    </control>
+    <control controlID="14" controlTypeID="com.balsamiq.mockups::Image" x="649" y="454" w="56" h="37" measuredW="429" measuredH="282" zOrder="8" locked="false" isInGroup="-1">
+      <controlProperties>
+        <src>./assets/logo%2520LIMOS.png</src>
+        <text/>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
