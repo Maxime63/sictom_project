@@ -2,11 +2,15 @@ package com.savajolchauvet.testgoogledatastore.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -17,9 +21,10 @@ import com.savajolchauvet.testgoogledatastore.endpoint.EndpointAsyncTask;
 import com.maximechauvet.testgoogledatastore.R;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements LocationListener {
     private GoogleMap mMap;
-    private LatLng mClermont = new LatLng(45.7833, 3.0833);
+    private LocationManager mLocationManager;
+    //private LatLng mClermont = new LatLng(45.7833, 3.0833);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,19 +33,31 @@ public class MainActivity extends Activity {
 
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 
-        mMap.setMyLocationEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mClermont, 13));
+//        mMap.setMyLocationEnabled(true);
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mClermont, 13));
+//
+//        mMap.addMarker(new MarkerOptions()
+//                        .title("Clermont-Ferrand")
+//                        .snippet("Capitale Auvergnate")
+//                        .position(mClermont));
+//
+//        String params = mClermont.latitude + ConstanteMetier.PARAMS_SEPARATOR + mClermont.longitude;
 
-        mMap.addMarker(new MarkerOptions()
-                        .title("Clermont-Ferrand")
-                        .snippet("Capitale Auvergnate")
-                        .position(mClermont));
-
-        String params = mClermont.latitude + ConstanteMetier.PARAMS_SEPARATOR + mClermont.longitude;
-
-        new EndpointAsyncTask().execute(new Pair<Context, String>(this, params));
+        //new EndpointAsyncTask().execute(new Pair<Context, String>(this, params));
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //On obtient la référence du service.
+        mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
+        //Si le GPS est disponible, alors on s'y abonne
+        if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -62,5 +79,26 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+
+        StringBuilder msg = new StringBuilder();
+        msg.append("lat : ").append(lat).append("; lng : ").append(lng);
+
+        Toast.makeText(this, msg.toString(), Toast.LENGTH_SHORT).show();
+
+        LatLng newLatLng = new LatLng(lat, lng);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 15));
+
+
+        mMap.addMarker(new MarkerOptions()
+                .title(msg.toString())
+                .position(newLatLng));
+
+        //Insertion en BDD !
     }
 }
