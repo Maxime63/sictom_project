@@ -3,6 +3,7 @@ package com.savajolchauvet.testgoogledatastore.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Pair;
@@ -10,40 +11,35 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.maximechauvet.testgoogledatastore.R;
+import com.savajolchauvet.testgoogledatastore.bdd.DatabaseHelper;
 import com.savajolchauvet.testgoogledatastore.constante.ConstanteMetier;
 import com.savajolchauvet.testgoogledatastore.endpoint.EndpointAsyncTask;
-import com.maximechauvet.testgoogledatastore.R;
+
+import java.util.Date;
 
 
 public class MainActivity extends Activity implements LocationListener {
+    public static final long INTERVAL_TIME_UPDATE = 5000;
+    public static final float INTERVAL_MIN_DISTANCE_UPDATE = 0;
+
     private GoogleMap mMap;
     private LocationManager mLocationManager;
-    //private LatLng mClermont = new LatLng(45.7833, 3.0833);
+    private DatabaseHelper dbh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbh = new DatabaseHelper(this);
+
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-
-//        mMap.setMyLocationEnabled(true);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mClermont, 13));
-//
-//        mMap.addMarker(new MarkerOptions()
-//                        .title("Clermont-Ferrand")
-//                        .snippet("Capitale Auvergnate")
-//                        .position(mClermont));
-//
-//        String params = mClermont.latitude + ConstanteMetier.PARAMS_SEPARATOR + mClermont.longitude;
-
-        //new EndpointAsyncTask().execute(new Pair<Context, String>(this, params));
     }
 
     @Override
@@ -55,8 +51,37 @@ public class MainActivity extends Activity implements LocationListener {
 
         //Si le GPS est disponible, alors on s'y abonne
         if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            abonnementGps();
 
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        uploadData();
+        desabonnementGps();
+    }
+
+    private void abonnementGps() {
+        //Mise à jour toutes les 5sec et pour une distance minimale de différence. Ici elle est
+        //à 0 pour effectuer les tests
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, INTERVAL_TIME_UPDATE, INTERVAL_MIN_DISTANCE_UPDATE, this);
+    }
+
+    private void desabonnementGps() {
+        mLocationManager.removeUpdates(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        uploadData();
+        desabonnementGps();
+    }
+
+    private void uploadData() {
+
     }
 
     @Override
@@ -100,5 +125,32 @@ public class MainActivity extends Activity implements LocationListener {
                 .position(newLatLng));
 
         //Insertion en BDD !
+        dbh.addCoordonnee(lat, lng, new Date(System.currentTimeMillis()));
+//        String params = lat + ConstanteMetier.PARAMS_SEPARATOR + lng;
+//
+//        new EndpointAsyncTask().execute(new Pair<Context, String>(this, params));
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        if(provider.equals("gps")){
+            abonnementGps();
+        }
+
+        Toast.makeText(this, "Connexion au GPS", Toast.LENGTH_SHORT);
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        if(provider.equals("gps")){
+            desabonnementGps();
+        }
+        Toast.makeText(this, "Déconnexion au GPS", Toast.LENGTH_SHORT);
     }
 }
