@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.maximechauvet.api.myApi.MyApi;
+import com.savajolchauvet.api.myApi.MyApi;
 import com.savajolchauvet.testgoogledatastore.constante.ConstanteMetier;
 
 import java.io.IOException;

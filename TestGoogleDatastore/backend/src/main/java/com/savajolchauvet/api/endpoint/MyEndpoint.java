@@ -19,7 +19,9 @@ import javax.inject.Named;
 /**
  * An endpoint class we are exposing
  */
-@Api(name = "myApi", version = "v1", namespace = @ApiNamespace(ownerDomain = "api.maximechauvet.com", ownerName = "api.maximechauvet.com", packagePath = ""))
+@Api(name = "myApi", version = "v1", namespace = @ApiNamespace(ownerDomain = "api.savajolchauvet.com",
+                                                               ownerName = "api.savajolchauvet.com",
+                                                               packagePath = ""))
 public class MyEndpoint {
     DatastoreService ds = DatastoreServiceFactory.getDatastoreService();
 

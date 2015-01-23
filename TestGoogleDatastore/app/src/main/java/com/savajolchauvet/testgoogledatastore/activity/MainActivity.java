@@ -18,10 +18,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.maximechauvet.testgoogledatastore.R;
 import com.savajolchauvet.testgoogledatastore.bdd.DatabaseHelper;
-import com.savajolchauvet.testgoogledatastore.constante.ConstanteMetier;
 import com.savajolchauvet.testgoogledatastore.endpoint.EndpointAsyncTask;
 
+import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends Activity implements LocationListener {
@@ -38,7 +39,6 @@ public class MainActivity extends Activity implements LocationListener {
         setContentView(R.layout.activity_main);
 
         dbh = new DatabaseHelper(this);
-
         mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
     }
 
@@ -48,16 +48,21 @@ public class MainActivity extends Activity implements LocationListener {
 
         //On obtient la référence du service.
         mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, INTERVAL_TIME_UPDATE, INTERVAL_MIN_DISTANCE_UPDATE, this);
+
 
         //Si le GPS est disponible, alors on s'y abonne
         if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             abonnementGps();
 
         }
+
     }
 
     @Override
     protected void onPause() {
+        //ATTENTION NE PAS ARRETER L'APPLICATION !!!
+
         super.onPause();
         uploadData();
         desabonnementGps();
@@ -81,7 +86,15 @@ public class MainActivity extends Activity implements LocationListener {
     }
 
     private void uploadData() {
+        try {
+            List<String> coords = dbh.getAllCoordonnees();
 
+            for(String coord : coords){
+                new EndpointAsyncTask().execute(new Pair<Context, String>(this, coord));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -126,10 +139,6 @@ public class MainActivity extends Activity implements LocationListener {
 
         //Insertion en BDD !
         dbh.addCoordonnee(lat, lng, new Date(System.currentTimeMillis()));
-//        String params = lat + ConstanteMetier.PARAMS_SEPARATOR + lng;
-//
-//        new EndpointAsyncTask().execute(new Pair<Context, String>(this, params));
-
     }
 
     @Override
@@ -139,18 +148,17 @@ public class MainActivity extends Activity implements LocationListener {
 
     @Override
     public void onProviderEnabled(String provider) {
+        Toast.makeText(this, "Connexion au GPS", Toast.LENGTH_SHORT);
         if(provider.equals("gps")){
             abonnementGps();
         }
-
-        Toast.makeText(this, "Connexion au GPS", Toast.LENGTH_SHORT);
     }
 
     @Override
     public void onProviderDisabled(String provider) {
+        Toast.makeText(this, "Déconnexion au GPS", Toast.LENGTH_SHORT);
         if(provider.equals("gps")){
             desabonnementGps();
         }
-        Toast.makeText(this, "Déconnexion au GPS", Toast.LENGTH_SHORT);
     }
 }
