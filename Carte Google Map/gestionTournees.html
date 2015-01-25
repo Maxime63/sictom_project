@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="carte.css" />
+    </head>
+    <body>
+        <h1>Gestion des tourn&eacute;es</h1>
+		<div id="MenuCamions">
+			<h2>Camions</h2>
+				<a href=#>1</a><br />
+				<a href=#>2</a><br />
+				<a href=#>3</a><br />
+				<a href=#>4</a><br />
+				<a href=#>5</a><br />
+				<a href=#>6</a><br />
+		</div>
+		
+		
+		
+        <input type="button" onclick="deleteMarkers();" value="Supprimer les points"/>
+        <div class="divMap">
+            <div id="map-canvas" class="map"></div>
+			<!--
+       		   <table id="markersT" cellspacing='0' class="markersTable">
+                <thead>
+                    <tr>
+                        <th>N</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> -->
+        </div>
+		<div class="floatRight">
+			<label>Camion : </label>
+			<label>Chauffeur : </label>
+			<label>Ripper 1 : </label>
+			<label>Ripper 2 : </label>
+			
+		</div>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpq3rbVtsws0uutHoIpNHPTGGPC4Lj5q8"></script>
+        <script type="text/javascript" src="map.js"></script>
+    </body>
+</html>

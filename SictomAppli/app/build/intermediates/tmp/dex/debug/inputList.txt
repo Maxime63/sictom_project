@@ -1,0 +1,5 @@
+C:\Users\Laetitia\Documents\sictom_project\SictomAppli\app\build\intermediates\classes\debug
+C:\Users\Laetitia\Documents\sictom_project\SictomAppli\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-b7cc389d48fee7734d559a9d1ebd95dfff221c23.jar
+C:\Users\Laetitia\Documents\sictom_project\SictomAppli\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-8d8f9ba1ebc8d5d4fca8a734b568476f14bfbfba.jar
+C:\Users\Laetitia\Documents\sictom_project\SictomAppli\app\build\intermediates\pre-dexed\debug\classes-0f49ba3c4ae0237cd791f5331d8f8f17df3e3081.jar
+C:\Users\Laetitia\Documents\sictom_project\SictomAppli\app\build\intermediates\pre-dexed\debug\classes-524c73d0e72c962d77b516286c8d9342474d0e3a.jar
