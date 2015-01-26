@@ -189,11 +189,10 @@ public class PositionCourante extends Activity {
                 System.out.println("Zone 2");
                 intent = new Intent(PositionCourante.this, Authentification.class);
                 startActivity(intent);
-                //  fragment = new FindPeopleFragment();
                 break;
             case 2:
                 System.out.println("Zone 3");
-                System.exit(0);
+                onStop();
                 break;
             default:
                 break;
