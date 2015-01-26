@@ -35,21 +35,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        logger.info("DatabaseHelper : object constructed");
+        logger.info("DatabaseHelper constructed");
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        logger.info("DatabaseHelper : create bd ==> " + CREATE_TABLE_TCOORDONNEE_SQL);
+        logger.info("Create DB ==> " + CREATE_TABLE_TCOORDONNEE_SQL);
         db.execSQL(CREATE_TABLE_TCOORDONNEE_SQL);
-        logger.info("DatabaseHelper : bd created");
+        logger.info("DB created");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.setVersion(newVersion);
         db.execSQL("DROP TABLE IF EXISTS " + TCoordonneesDataSource.TABLE_TCOORDONNEE);
-        logger.info("DatabaseHelper : upgrade database");
+        logger.info("Upgrade database");
         onCreate(db);
     }
 }

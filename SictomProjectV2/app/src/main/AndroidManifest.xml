@@ -26,14 +26,17 @@
             android:value="@string/google_maps_key" />
 
         <service android:name="com.savajolchauvet.isima.service.CoordPushService"
-                 android:exported="false"/>
+                 android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

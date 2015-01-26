@@ -6,6 +6,7 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.savajolchauvet.isima.sictomproject.backend.Constante.ConstanteMetier;
 import com.savajolchauvet.isima.sictomproject.backend.metier.TCoordonnee;
 
 import java.text.DateFormat;
@@ -58,14 +59,19 @@ public class TCoordonneeEndpoint {
         // TODO: Implement this function
         logger.info("Calling insertTCoordonnee method");
 
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        DateFormat df = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);
 
-        Entity myCoord = new Entity(TCoordonnee.TCOORDONNE_ENTITY);
-        myCoord.setProperty(TCoordonnee.LATITUDE_PROPERTY, latitude);
-        myCoord.setProperty(TCoordonnee.LONGITUDE_PROPERTY, longitude);
-        myCoord.setProperty(TCoordonnee.DATE_PROPERTY, date);
-        ds.put(myCoord);
+        try {
+            Entity myCoord = new Entity(TCoordonnee.TCOORDONNE_ENTITY);
+            myCoord.setProperty(TCoordonnee.LATITUDE_PROPERTY, latitude);
+            myCoord.setProperty(TCoordonnee.LONGITUDE_PROPERTY, longitude);
+            myCoord.setProperty(TCoordonnee.DATE_PROPERTY, df.parse(date));
+            ds.put(myCoord);
 
-        return new TCoordonnee(id, latitude, longitude, new Date(System.currentTimeMillis()));
+            return new TCoordonnee(id, latitude, longitude, df.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
