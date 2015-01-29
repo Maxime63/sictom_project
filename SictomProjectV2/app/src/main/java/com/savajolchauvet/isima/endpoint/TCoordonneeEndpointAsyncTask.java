@@ -8,8 +8,8 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.savajolchauvet.isima.bdd.TCoordonneesDataSource;
 import com.savajolchauvet.isima.constante.ConstanteMetier;
-import com.savajolchauvet.isima.sictomproject.backend.endpoint.tCoordonneeApi.TCoordonneeApi;
-import com.savajolchauvet.isima.sictomproject.backend.endpoint.tCoordonneeApi.model.TCoordonnee;
+import com.savajolchauvet.isima.sictomproject.backend.endpoint.sictomApi.SictomApi;
+import com.savajolchauvet.isima.sictomproject.backend.endpoint.sictomApi.model.TCoordonnee;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -20,15 +20,15 @@ import java.util.logging.Logger;
 public class TCoordonneeEndpointAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
     private static Logger logger = Logger.getLogger(TCoordonneeEndpointAsyncTask.class.getName());
 
-    private TCoordonneeApi tCoordonneeApiService = null;
+    private SictomApi sictomApi = null;
     private Context context;
 
 
     public TCoordonneeEndpointAsyncTask(TCoordonneesDataSource coordonneeDataSource){
-        TCoordonneeApi.Builder builder = new TCoordonneeApi.Builder(AndroidHttp.newCompatibleTransport(),
+        SictomApi.Builder builder = new SictomApi.Builder(AndroidHttp.newCompatibleTransport(),
                                                                     new AndroidJsonFactory(),
                                                                     null);
-        tCoordonneeApiService = builder.build();
+        sictomApi = builder.build();
     }
 
     @Override
@@ -46,8 +46,7 @@ public class TCoordonneeEndpointAsyncTask extends AsyncTask<Pair<Context, String
         String date = paramsLatLng[3];
 
         try {
-            TCoordonnee coord = tCoordonneeApiService.insertTCoordonnee(id, latitude, longitude, date).execute();
-
+            TCoordonnee coord = sictomApi.insertCoord(date, id, latitude, longitude).execute();
             if(coord != null){
                 return String.valueOf(coord.getId());
             }

@@ -12,11 +12,12 @@ import android.util.Pair;
 import com.savajolchauvet.isima.bdd.TCoordonneesDataSource;
 import com.savajolchauvet.isima.constante.ConstanteMetier;
 import com.savajolchauvet.isima.endpoint.TCoordonneeEndpointAsyncTask;
-import com.savajolchauvet.isima.sictomproject.backend.endpoint.tCoordonneeApi.model.TCoordonnee;
+import com.savajolchauvet.isima.sictomproject.backend.endpoint.sictomApi.model.TCoordonnee;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,7 +34,7 @@ public class CoordPushService extends IntentService{
     private TCoordonneesDataSource mTCoordonneesDataSource;
     private Timer mTimer;
 
-    private boolean isOpen;
+//    private boolean isOpen;
 
     private NetworkInfo activeNetwork;
 
@@ -45,10 +46,8 @@ public class CoordPushService extends IntentService{
 
             if(action.equals(ConstanteMetier.CONNECTIVITY_CHANGE)){
                 logger.info("Connectivity changed, start to upload data");
-                if(!isOpen){
-                    isOpen = true;
+                if(!mTCoordonneesDataSource.isOpen()){
                     uploadData();
-                    isOpen = false;
                 }
                 else{
                     logger.info("Database already open");
@@ -60,7 +59,6 @@ public class CoordPushService extends IntentService{
 
     public CoordPushService(){
         super(CoordPushService.class.getName());
-        isOpen = false;
     }
 
     @Override
@@ -96,30 +94,42 @@ public class CoordPushService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         logger.info("New intent, try to upload data");
-        if(!isOpen){
-            isOpen = true;
+        if(!mTCoordonneesDataSource.isOpen()){
             uploadData();
-            isOpen = false;
         }
         else{
             logger.info("Database already open");
         }
-        logger.info("New intent, data uploaded");
+        logger.info("Connectivity changed, data uploaded");
     }
 
     private void uploadData() {
         logger.info("-------->START TO UPLOAD DATA<-----------");
-        mTCoordonneesDataSource.open();
 
         if(isConnected()) {
-            try {
-                List<TCoordonnee> coords = mTCoordonneesDataSource.getAllCoordonnees();
+            List<TCoordonnee> coords = new ArrayList<>();
+            if(!mTCoordonneesDataSource.isOpen()){
+                try {
+                    mTCoordonneesDataSource.openRead();
+                    coords = mTCoordonneesDataSource.getAllCoordonnees();
+                    mTCoordonneesDataSource.close();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    mTCoordonneesDataSource.close();
+                }
+            }
+            else{
+                logger.info("Database already open");
+            }
 
+            if(!mTCoordonneesDataSource.isOpen()){
+                mTCoordonneesDataSource.openWrite();
                 for (TCoordonnee coord : coords) {
                     try {
                         DateFormat df = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);
                         String coordParam = coord.getId() + ";" + coord.getLatitude() + ";" + coord.getLongitude() + ";" + df.format(System.currentTimeMillis());
                         logger.info("Start to upload coord ==> " + coordParam);
+
                         String id = new TCoordonneeEndpointAsyncTask(mTCoordonneesDataSource).execute(new Pair<Context, String>(this, coordParam)).get();
 
                         logger.info("Coordonnee uploaded ==> " + id);
@@ -127,19 +137,19 @@ public class CoordPushService extends IntentService{
                         if (!id.equals(ConstanteMetier.NO_COORD_INSERTED_ERROR_CODE)) {
                             mTCoordonneesDataSource.deleteCoordonnee(Long.parseLong(id));
                         }
-                    } catch (InterruptedException | ExecutionException e) {
+                    } catch (InterruptedException | ExecutionException | NumberFormatException e) {
                         e.printStackTrace();
                     }
                 }
-
-            } catch (ParseException e) {
-                e.printStackTrace();
+                mTCoordonneesDataSource.close();
+            }
+            else{
+                logger.info("Database already open");
             }
         }
         else{
             logger.info("Not connected to a network");
         }
-        mTCoordonneesDataSource.close();
         logger.info("----------->DATA UPLOADED<-------------");
     }
 
@@ -153,18 +163,19 @@ public class CoordPushService extends IntentService{
 
         @Override
         public void run() {
+            logger.info("-------------TIMER, START RUN-------------");
             logger.info("UploadTImerTask : Try to upload coords");
 
-            if(!isOpen) {
-                isOpen = true;
+            if(!mTCoordonneesDataSource.isOpen()){
                 uploadData();
-                isOpen = false;
             }
             else{
                 logger.info("Database already open");
             }
+            logger.info("Connectivity changed, data uploaded");
 
             logger.info("UploadTImerTask : coords uploaded");
+            logger.info("-------------TIMER, RUN FINISHED-----------------");
             mTimer.schedule(new UploadTimerTask(mContext), UPLOAD_TIMER);
         }
     }

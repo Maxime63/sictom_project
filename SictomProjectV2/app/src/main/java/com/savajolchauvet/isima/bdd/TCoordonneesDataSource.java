@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.google.api.client.util.DateTime;
 import com.savajolchauvet.isima.constante.ConstanteMetier;
-import com.savajolchauvet.isima.sictomproject.backend.endpoint.tCoordonneeApi.model.TCoordonnee;
+import com.savajolchauvet.isima.sictomproject.backend.endpoint.sictomApi.model.TCoordonnee;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -38,7 +38,12 @@ public class TCoordonneesDataSource {
     public static final int NB_MAX_COORDS = 5;
 
     private DatabaseHelper dbh;
-        private SQLiteDatabase db;
+    private SQLiteDatabase dbw;
+    private SQLiteDatabase dbr;
+
+    public boolean isOpen(){
+        return ((dbw != null && dbw.isOpen()) || (dbr != null && dbr.isOpen()));
+    }
 
     private TCoordonneesDataSource(Context context){
         dbh = new DatabaseHelper(context);
@@ -47,7 +52,7 @@ public class TCoordonneesDataSource {
         logger.info("TCoordonneesDataSource constructed");
     }
 
-    public static TCoordonneesDataSource getInstance(Context context){
+    public static synchronized TCoordonneesDataSource getInstance(Context context){
         if(mTCoordonneesDataSource == null){
             mTCoordonneesDataSource = new TCoordonneesDataSource(context);
         }
@@ -55,9 +60,14 @@ public class TCoordonneesDataSource {
         return mTCoordonneesDataSource;
     }
 
-    public void open(){
-        db = dbh.getWritableDatabase();
-        logger.info("Database opened");
+    public void openWrite(){
+        dbw = dbh.getWritableDatabase();
+        logger.info("Database opened in writable mode");
+    }
+
+    public void openRead(){
+        dbr = dbh.getReadableDatabase();
+        logger.info("Database opened in readable mode");
     }
 
     public void close(){
@@ -65,9 +75,7 @@ public class TCoordonneesDataSource {
         logger.info("Database closed");
     }
 
-    public boolean isOpen(){
-        return db != null && db.isOpen();
-    }
+
 
     public int getNbCoords(){
         return nbCoords;
@@ -84,7 +92,7 @@ public class TCoordonneesDataSource {
         values.put(COLUMN_DATE, simpleDateFormat.format(date));
 
         logger.info("Try to insert coord ==> (" + lat + " ; " + lng + ")");
-        db.insert(TABLE_TCOORDONNEE, null, values);
+        dbw.insert(TABLE_TCOORDONNEE, null, values);
         logger.info("Coord inserted ==> (" + lat + " ; " + lng + ")");
 
         nbCoords++;
@@ -96,11 +104,14 @@ public class TCoordonneesDataSource {
     public void deleteCoordonnee(long id){
         logger.info("------------>START DELETE COORD<-------------");
         logger.info("Try to delete coord ==> " + id);
-        int result = db.delete(TABLE_TCOORDONNEE, COLUMN_ID + " = " + id, null);
+        int result = dbw.delete(TABLE_TCOORDONNEE, COLUMN_ID + " = " + id, null);
 
         if(result == 1){
             logger.info("Coord deleted ==> " + id);
             nbCoords--;
+        }
+        else{
+            logger.info("No coord corresponding to ==> " + id);
         }
         logger.info("------------>END DELETE COORD<-------------");
     }
@@ -109,7 +120,7 @@ public class TCoordonneesDataSource {
         logger.info("------------>START RETRIEVE ALL COORD<-------------");
         List<TCoordonnee> coords = new ArrayList<>();
 
-        Cursor result = db.query(TABLE_TCOORDONNEE, ALL_TCOORDONNEES_COLUMNS, null, null, null, null, null);
+        Cursor result = dbr.query(TABLE_TCOORDONNEE, ALL_TCOORDONNEES_COLUMNS, null, null, null, null, null);
         result.moveToFirst();
         while(!result.isAfterLast()){
             DateFormat df = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);

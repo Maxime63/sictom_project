@@ -5,7 +5,7 @@
         <servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
         <init-param>
             <param-name>services</param-name>
-            <param-value>com.savajolchauvet.isima.sictomproject.backend.endpoint.TCoordonneeEndpoint</param-value>
+            <param-value>com.savajolchauvet.isima.sictomproject.backend.endpoint.SictomEndpoint</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

@@ -13,13 +13,24 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.api.client.util.DateTime;
+import com.google.api.client.util.Maps;
 import com.savajolchauvet.isima.bdd.TCoordonneesDataSource;
+import com.savajolchauvet.isima.constante.ConstanteMetier;
 import com.savajolchauvet.isima.service.CoordPushService;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Timer;
+import java.util.List;
+import java.util.logging.Logger;
 
 public class MapsActivity extends FragmentActivity implements LocationListener {
+    //Logger
+    private static final Logger logger = Logger.getLogger(MapsActivity.class.getName());
+
     //GPS Configurations
     public static final long INTERVAL_TIME_UPDATE = 5000;
     public static final float INTERVAL_MIN_DISTANCE_UPDATE = 0;
@@ -31,7 +42,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
     private LocationManager mLocationManager;
 
     //Datasource for coords
-    private TCoordonneesDataSource mCoordonneesDataSource;
+    private TCoordonneesDataSource mTCoordonneesDataSource;
+    private List<String> mWaitingCoords;
 
     //Service for upload data
     private Intent mServiceIntent;
@@ -40,24 +52,13 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        mCoordonneesDataSource = TCoordonneesDataSource.getInstance(this);
-        setUpMapIfNeeded();
-
-        mServiceIntent = new Intent(this, CoordPushService.class);
-        startService(mServiceIntent);
-
-        //Coordonnée de départ
-        LatLng clermont = new LatLng(45.7796600, 3.0862800);
-        mMap.addMarker(new MarkerOptions()
-                .title("Clermont-Ferrand")
-                .position(clermont));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(clermont, 15));
+        setUpIfNeeded();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
+        setUpIfNeeded();
     }
 
     @Override
@@ -90,9 +91,15 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
      * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
      * method in {@link #onResume()} to guarantee that it will be called.
      */
-    private void setUpMapIfNeeded() {
+    private void setUpIfNeeded() {
+        if(mLocationManager == null){
+            mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, INTERVAL_TIME_UPDATE, INTERVAL_MIN_DISTANCE_UPDATE, this);
+        }
+
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
+            logger.info("Create new map");
             // Try to obtain the map from the SupportMapFragment.
             mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
@@ -100,6 +107,26 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
             if (mMap != null) {
                 setUpMap();
             }
+        }
+
+        if(mWaitingCoords == null){
+            logger.info("Create new waiting coords list");
+            mWaitingCoords = new ArrayList<>();
+        }
+
+        if(mTCoordonneesDataSource == null){
+            logger.info("Create new TCoordonneesDataSource");
+            mTCoordonneesDataSource = TCoordonneesDataSource.getInstance(this);
+
+            //Open database first time for create db
+            mTCoordonneesDataSource.openWrite();
+            mTCoordonneesDataSource.close();
+        }
+
+        if(mServiceIntent == null){
+            logger.info("Create new service intent");
+            mServiceIntent = new Intent(this, CoordPushService.class);
+            startService(mServiceIntent);
         }
     }
 
@@ -110,8 +137,13 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mLocationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, INTERVAL_TIME_UPDATE, INTERVAL_MIN_DISTANCE_UPDATE, this);
+        //Coordonnée de départ
+        LatLng clermont = new LatLng(45.7796600, 3.0862800);
+        mMap.addMarker(new MarkerOptions()
+                .title("Clermont-Ferrand")
+                .position(clermont));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(clermont, 15));
+
     }
 
     @Override
@@ -133,12 +165,36 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
                 .position(newLatLng));
 
         //Insertion BDD SQLITE
-        mCoordonneesDataSource.open();
-        mCoordonneesDataSource.createCoordonnee(lat, lng,new Date(System.currentTimeMillis()) );
-        mCoordonneesDataSource.close();
+        if(!mTCoordonneesDataSource.isOpen()) {
+            mTCoordonneesDataSource.openWrite();
+
+            //Insert waiting coords before insert the new coord
+            for(String coord : mWaitingCoords){
+                try {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);
+                    String[] coordData = coord.split(ConstanteMetier.SEPARATOR);
+                    mTCoordonneesDataSource.createCoordonnee(Double.parseDouble(coordData[0]), Double.parseDouble(coordData[1]), simpleDateFormat.parse(coordData[2]));
+                } catch (ParseException e) {
+                    logger.info("Parse error during insert waiting coords");
+                    e.printStackTrace();
+                }
+            }
+
+            mWaitingCoords = new ArrayList<>();
+
+            //Insert new coord
+            mTCoordonneesDataSource.createCoordonnee(lat, lng, new Date(System.currentTimeMillis()));
+            mTCoordonneesDataSource.close();
+        }
+        else{
+            logger.info("Insert into waiting coords list");
+            DateFormat df = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);
+            String coord = lat + ConstanteMetier.SEPARATOR + lng + ConstanteMetier.SEPARATOR + df.format(new Date(System.currentTimeMillis()));
+            mWaitingCoords.add(coord);
+        }
 
         //Si on a atteint le nombre max de coordonnées en base, alors on upload
-        if(mCoordonneesDataSource.getNbCoords() >= TCoordonneesDataSource.NB_MAX_COORDS){
+        if(mTCoordonneesDataSource.getNbCoords() >= TCoordonneesDataSource.NB_MAX_COORDS){
             startService(mServiceIntent);
         }
     }
