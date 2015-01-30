@@ -10,8 +10,8 @@
       <configuration>
         <option name="HTTP_ADDRESS" value="localhost" />
         <option name="HTTP_PORT" value="8080" />
-        <option name="WAR_DIR" value="D:\ISIMA\ZZ3\Projet\SictomProjectV2\backend\build\exploded-app" />
-        <option name="WEB_APP_DIR" value="D:\ISIMA\ZZ3\Projet\SictomProjectV2\backend\src\main\webapp" />
+        <option name="WAR_DIR" value="E:\ISIMA\ZZ3\Projet\sictom_project\SictomProjectV2\backend\build\exploded-app" />
+        <option name="WEB_APP_DIR" value="E:\ISIMA\ZZ3\Projet\sictom_project\SictomProjectV2\backend\src\main\webapp" />
         <option name="APPENGINE_SDKROOT" value="C:\Users\Maxime\.gradle\appengine-sdk\appengine-java-sdk-1.9.15" />
       </configuration>
     </facet>

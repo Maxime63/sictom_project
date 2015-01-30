@@ -1,5 +1,6 @@
 package com.savajolchauvet.isima.sictomproject.backend.endpoint;
 
+import com.google.api.server.spi.Constant;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -32,13 +33,7 @@ import javax.inject.Named;
  */
 @Api(
         name = "sictomApi",
-        version = "v1",
-        resource = "sictom",
-        namespace = @ApiNamespace(
-                ownerDomain = "endpoint.backend.sictomproject.isima.savajolchauvet.com",
-                ownerName = "endpoint.backend.sictomproject.isima.savajolchauvet.com",
-                packagePath = ""
-        )
+        version = "v1"
 )
 public class SictomEndpoint {
 
