@@ -1,4 +1,4 @@
-package com.savajolchauvet.isima.constante;
+package com.savajolchauvet.isima.sictomproject.constante;
 
 /**
  * Created by Maxime on 12/01/2015.

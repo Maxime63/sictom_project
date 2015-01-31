@@ -1,13 +1,13 @@
-package com.savajolchauvet.isima.bdd;
+package com.savajolchauvet.isima.sictomproject.bdd;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.appspot.speedy_baton_840.sictomApi.model.TCoordonnee;
 import com.google.api.client.util.DateTime;
-import com.savajolchauvet.isima.constante.ConstanteMetier;
-import com.savajolchauvet.isima.sictomproject.backend.endpoint.sictomApi.model.TCoordonnee;
+import com.savajolchauvet.isima.sictomproject.constante.ConstanteMetier;
 
 import java.text.DateFormat;
 import java.text.ParseException;

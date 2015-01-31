@@ -1,4 +1,4 @@
-package com.savajolchauvet.isima.service;
+package com.savajolchauvet.isima.sictomproject.service;
 
 import android.app.IntentService;
 import android.content.BroadcastReceiver;
@@ -9,10 +9,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Pair;
 
-import com.savajolchauvet.isima.bdd.TCoordonneesDataSource;
-import com.savajolchauvet.isima.constante.ConstanteMetier;
-import com.savajolchauvet.isima.endpoint.TCoordonneeEndpointAsyncTask;
-import com.savajolchauvet.isima.sictomproject.backend.endpoint.sictomApi.model.TCoordonnee;
+import com.appspot.speedy_baton_840.sictomApi.model.TCoordonnee;
+import com.savajolchauvet.isima.sictomproject.bdd.TCoordonneesDataSource;
+import com.savajolchauvet.isima.sictomproject.constante.ConstanteMetier;
+import com.savajolchauvet.isima.sictomproject.endpoint.TCoordonneeEndpointAsyncTask;
 
 import java.text.DateFormat;
 import java.text.ParseException;

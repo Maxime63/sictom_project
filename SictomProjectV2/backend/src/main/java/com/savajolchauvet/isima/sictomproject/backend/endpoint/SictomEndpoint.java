@@ -57,18 +57,13 @@ public class SictomEndpoint {
         Key key = KeyFactory.createKey(TCoordonnee.TCOORDONNE_ENTITY, id);
 
         try {
-            try {
-                Entity coordEntity = ds.get(key);
-                double latitude = (double) coordEntity.getProperty(TCoordonnee.LATITUDE_PROPERTY);
-                double longitude = (double) coordEntity.getProperty(TCoordonnee.LONGITUDE_PROPERTY);
-                Date dateDebut = df.parse((String) coordEntity.getProperty(TCoordonnee.DATE_PROPERTY));
-                long tourneeId = (long) coordEntity.getProperty(TCoordonnee.TOURNEE_ID_PROPERTY);
+            Entity coordEntity = ds.get(key);
+            double latitude = (double) coordEntity.getProperty(TCoordonnee.LATITUDE_PROPERTY);
+            double longitude = (double) coordEntity.getProperty(TCoordonnee.LONGITUDE_PROPERTY);
+            Date date = (Date) coordEntity.getProperty(TCoordonnee.DATE_PROPERTY);
+            long tourneeId = (long) coordEntity.getProperty(TCoordonnee.TOURNEE_ID_PROPERTY);
 
-                coord = new TCoordonnee(coordEntity.getKey().getId(), latitude, longitude, dateDebut, tourneeId);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
+            coord = new TCoordonnee(coordEntity.getKey().getId(), latitude, longitude, date, tourneeId);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }
@@ -86,16 +81,12 @@ public class SictomEndpoint {
         PreparedQuery pq = ds.prepare(q);
 
         for(Entity coord : pq.asIterable()){
-            try {
-                double latitude = (double) coord.getProperty(TCoordonnee.LATITUDE_PROPERTY);
-                double longitude = (double) coord.getProperty(TCoordonnee.LONGITUDE_PROPERTY);
-                Date dateDebut = df.parse((String) coord.getProperty(TCoordonnee.DATE_PROPERTY));
-                long tourneeId = (long) coord.getProperty(TCoordonnee.TOURNEE_ID_PROPERTY);
+            double latitude = (double) coord.getProperty(TCoordonnee.LATITUDE_PROPERTY);
+            double longitude = (double) coord.getProperty(TCoordonnee.LONGITUDE_PROPERTY);
+            Date date = (Date) coord.getProperty(TCoordonnee.DATE_PROPERTY);
+            long tourneeId = (long) coord.getProperty(TCoordonnee.TOURNEE_ID_PROPERTY);
 
-                coordonnees.add(new TCoordonnee(coord.getKey().getId(), latitude, longitude, dateDebut, tourneeId));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            coordonnees.add(new TCoordonnee(coord.getKey().getId(), latitude, longitude, date, tourneeId));
         }
 
         return coordonnees;
@@ -114,9 +105,10 @@ public class SictomEndpoint {
             myCoord.setProperty(TCoordonnee.LATITUDE_PROPERTY, latitude);
             myCoord.setProperty(TCoordonnee.LONGITUDE_PROPERTY, longitude);
             myCoord.setProperty(TCoordonnee.DATE_PROPERTY, df.parse(date));
+            myCoord.setProperty(TCoordonnee.TOURNEE_ID_PROPERTY, 123456789);
             ds.put(myCoord);
 
-            return new TCoordonnee(id, latitude, longitude, df.parse(date), 0);
+            return new TCoordonnee(id, latitude, longitude, df.parse(date), 123456789);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
@@ -174,19 +166,15 @@ public class SictomEndpoint {
         PreparedQuery pq = ds.prepare(q);
 
         for(Entity tournee : pq.asIterable()){
-            try {
-                String nom  = (String) tournee.getProperty(TTournee.NOM_PROPERTY);
-                Date dateDebut = df.parse((String) tournee.getProperty(TTournee.DATE_DEBUT_PROPERTY));
-                Date dateFin = df.parse((String) tournee.getProperty(TTournee.DATE_DEBUT_PROPERTY));
-                long camionId = (long) tournee.getProperty(TTournee.TCAMION_ID_PROPERTY);
-                long chauffeurId = (long) tournee.getProperty(TTournee.CHAUFFEUR_ID_PROPERTY);
-                long firstRipperId = (long) tournee.getProperty(TTournee.FIRST_RIPPER_ID_PROPERTY);
-                long secondRipperId = (long) tournee.getProperty(TTournee.SECOND_RIPPER_ID_PROPERTY);
+            String nom  = (String) tournee.getProperty(TTournee.NOM_PROPERTY);
+            Date dateDebut = (Date) tournee.getProperty(TTournee.DATE_DEBUT_PROPERTY);
+            Date dateFin = (Date) tournee.getProperty(TTournee.DATE_DEBUT_PROPERTY);
+            long camionId = (long) tournee.getProperty(TTournee.TCAMION_ID_PROPERTY);
+            long chauffeurId = (long) tournee.getProperty(TTournee.CHAUFFEUR_ID_PROPERTY);
+            long firstRipperId = (long) tournee.getProperty(TTournee.FIRST_RIPPER_ID_PROPERTY);
+            long secondRipperId = (long) tournee.getProperty(TTournee.SECOND_RIPPER_ID_PROPERTY);
 
-                tournees.add(new TTournee(tournee.getKey().getId(), nom, dateDebut, dateFin, camionId, chauffeurId, firstRipperId, secondRipperId));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            tournees.add(new TTournee(tournee.getKey().getId(), nom, dateDebut, dateFin, camionId, chauffeurId, firstRipperId, secondRipperId));
         }
 
         return tournees;
@@ -203,21 +191,15 @@ public class SictomEndpoint {
         try {
             Entity tourneeEntity = ds.get(key);
 
-            try {
-                String nom  = (String) tourneeEntity.getProperty(TTournee.NOM_PROPERTY);
-                Date dateDebut = df.parse((String) tourneeEntity.getProperty(TTournee.DATE_DEBUT_PROPERTY));
-                Date dateFin = df.parse((String) tourneeEntity.getProperty(TTournee.DATE_DEBUT_PROPERTY));
-                long camionId = (long) tourneeEntity.getProperty(TTournee.TCAMION_ID_PROPERTY);
-                long chauffeurId = (long) tourneeEntity.getProperty(TTournee.CHAUFFEUR_ID_PROPERTY);
-                long firstRipperId = (long) tourneeEntity.getProperty(TTournee.FIRST_RIPPER_ID_PROPERTY);
-                long secondRipperId = (long) tourneeEntity.getProperty(TTournee.SECOND_RIPPER_ID_PROPERTY);
-
-                tournee = new TTournee(tourneeEntity.getKey().getId(), nom, dateDebut, dateFin, camionId, chauffeurId, firstRipperId, secondRipperId);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
             String nom  = (String) tourneeEntity.getProperty(TTournee.NOM_PROPERTY);
+            Date dateDebut = (Date) tourneeEntity.getProperty(TTournee.DATE_DEBUT_PROPERTY);
+            Date dateFin = (Date) tourneeEntity.getProperty(TTournee.DATE_DEBUT_PROPERTY);
+            long camionId = (long) tourneeEntity.getProperty(TTournee.TCAMION_ID_PROPERTY);
+            long chauffeurId = (long) tourneeEntity.getProperty(TTournee.CHAUFFEUR_ID_PROPERTY);
+            long firstRipperId = (long) tourneeEntity.getProperty(TTournee.FIRST_RIPPER_ID_PROPERTY);
+            long secondRipperId = (long) tourneeEntity.getProperty(TTournee.SECOND_RIPPER_ID_PROPERTY);
 
+            tournee = new TTournee(tourneeEntity.getKey().getId(), nom, dateDebut, dateFin, camionId, chauffeurId, firstRipperId, secondRipperId);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
         }

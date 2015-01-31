@@ -1,20 +1,9 @@
-package com.savajolchauvet.isima.bdd;
+package com.savajolchauvet.isima.sictomproject.bdd;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.savajolchauvet.isima.constante.ConstanteMetier;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**

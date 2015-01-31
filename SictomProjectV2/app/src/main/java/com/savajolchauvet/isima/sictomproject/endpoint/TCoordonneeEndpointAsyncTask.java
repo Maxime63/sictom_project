@@ -1,15 +1,15 @@
-package com.savajolchauvet.isima.endpoint;
+package com.savajolchauvet.isima.sictomproject.endpoint;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Pair;
 
+import com.appspot.speedy_baton_840.sictomApi.SictomApi;
+import com.appspot.speedy_baton_840.sictomApi.model.TCoordonnee;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.savajolchauvet.isima.bdd.TCoordonneesDataSource;
-import com.savajolchauvet.isima.constante.ConstanteMetier;
-import com.savajolchauvet.isima.sictomproject.backend.endpoint.sictomApi.SictomApi;
-import com.savajolchauvet.isima.sictomproject.backend.endpoint.sictomApi.model.TCoordonnee;
+import com.savajolchauvet.isima.sictomproject.bdd.TCoordonneesDataSource;
+import com.savajolchauvet.isima.sictomproject.constante.ConstanteMetier;
 
 import java.io.IOException;
 import java.util.logging.Logger;
