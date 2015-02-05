@@ -12,11 +12,14 @@ import android.widget.TextView;
 import com.savajolchauvet.isima.sictomproject.R;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Maxime on 31/01/2015.
  */
 public class CustomDrawerAdapter extends ArrayAdapter<DrawerItem> {
+    private static final Logger logger = Logger.getLogger(CustomDrawerAdapter.class.getName());
+
     private Context mContext;
     private List<DrawerItem> mDrawerItemList;
     private int mLayoutResID;
@@ -32,38 +35,30 @@ public class CustomDrawerAdapter extends ArrayAdapter<DrawerItem> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
-
-        DrawerItemHolder drawerHolder;
         View view = convertView;
 
         if (view == null) {
-            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-            drawerHolder = new DrawerItemHolder();
-
+            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(mLayoutResID, parent, false);
-            drawerHolder.ItemName = (TextView) view
-                    .findViewById(R.id.drawer_itemName);
-            drawerHolder.icon = (ImageView) view.findViewById(R.id.drawer_icon);
-
-            view.setTag(drawerHolder);
-
-        } else {
-            drawerHolder = (DrawerItemHolder) view.getTag();
-
         }
 
-        DrawerItem dItem = (DrawerItem) this.mDrawerItemList.get(position);
 
-        drawerHolder.icon.setImageDrawable(view.getResources().getDrawable(
-                dItem.getImageId()));
-        drawerHolder.ItemName.setText(dItem.getTitle());
+        TextView itemName = (TextView) view.findViewById(R.id.drawer_itemName);
+        ImageView icon = (ImageView) view.findViewById(R.id.drawer_icon);
+
+
+        icon.setImageDrawable(view.getResources().getDrawable(mDrawerItemList.get(position).getImageId()));
+        itemName.setText(mDrawerItemList.get(position).getTitle());
+
+        view.setEnabled(true);
+        view.setClickable(true);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logger.info("Click on item ");
+            }
+        });
 
         return view;
-    }
-
-    private static class DrawerItemHolder {
-        TextView ItemName;
-        ImageView icon;
     }
 }
