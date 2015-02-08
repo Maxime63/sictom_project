@@ -50,14 +50,6 @@ public class CustomDrawerAdapter extends ArrayAdapter<DrawerItem> {
         icon.setImageDrawable(view.getResources().getDrawable(mDrawerItemList.get(position).getImageId()));
         itemName.setText(mDrawerItemList.get(position).getTitle());
 
-        view.setEnabled(true);
-        view.setClickable(true);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logger.info("Click on item ");
-            }
-        });
 
         return view;
     }

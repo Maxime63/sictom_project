@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.savajolchauvet.isima.sictomproject.R;
+import com.savajolchauvet.isima.sictomproject.activity.fragment.CurrentPosition;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.FullTrip;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.MapsGPS;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.Signin;
@@ -36,9 +37,8 @@ public class MainActivity extends ActionBarActivity {
 
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
+
     private CustomDrawerAdapter mAdapter;
-
-
     private List<DrawerItem> mDataList;
 
     @Override
@@ -46,8 +46,10 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDrawerTitle = getTitle();
+        mTitle = getTitle();
+
         mDataList = new ArrayList<DrawerItem>();
-        mTitle = mDrawerTitle = getTitle();
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
@@ -81,13 +83,10 @@ public class MainActivity extends ActionBarActivity {
         };
         mDrawerToggle.setHomeAsUpIndicator(0);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            selectItem(0);
+            selectItem(3);
         }
     }
 
@@ -113,17 +112,32 @@ public class MainActivity extends ActionBarActivity {
                 fragment = new MapsGPS();
                 break;
             case 1:
-                fragment = new FullTrip();
+                fragment = new CurrentPosition();
                 break;
             case 2:
-                fragment = new Signin();
+                fragment = new FullTrip();
                 break;
             case 3:
+                fragment = new Signin();
+                break;
+            case 4:
                 break;
             default:
         }
 
-        getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+        if(position == 0 || position == 1 || position == 2){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+        else{
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setHomeButtonEnabled(false);
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
+
+        getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+        mDrawerList.setItemChecked(position, true);
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 

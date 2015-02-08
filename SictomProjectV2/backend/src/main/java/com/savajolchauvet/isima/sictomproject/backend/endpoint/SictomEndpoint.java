@@ -1,9 +1,7 @@
 package com.savajolchauvet.isima.sictomproject.backend.endpoint;
 
-import com.google.api.server.spi.Constant;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
-import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -207,6 +205,62 @@ public class SictomEndpoint {
         return tournee;
     }
 
+    @ApiMethod(name = "gestCoordonneesByTournee",
+            path = "coordonneesByTournee/{id}",
+            httpMethod = ApiMethod.HttpMethod.GET)
+    public List<TCoordonnee> getCoordonneesByTournee(@Named("id") long id)
+    {
+        List<TCoordonnee> coordonnees = new ArrayList<TCoordonnee>();
+        Query.Filter coordFilter =
+                new Query.FilterPredicate(TCoordonnee.TOURNEE_ID_PROPERTY,
+                        Query.FilterOperator.EQUAL, id);
+
+        Query q = new Query(TCoordonnee.TCOORDONNE_ENTITY).setFilter(coordFilter);
+        PreparedQuery pq = ds.prepare(q);
+
+        for (Entity coord : pq.asIterable())
+        {
+            double latitude = (double) coord.getProperty(TCoordonnee.LATITUDE_PROPERTY);
+            double longitude = (double) coord.getProperty(TCoordonnee.LONGITUDE_PROPERTY);
+            Date date = (Date) coord.getProperty(TCoordonnee.DATE_PROPERTY);
+            long tourneeId = (long) coord.getProperty(TCoordonnee.TOURNEE_ID_PROPERTY);
+
+            coordonnees.add(new TCoordonnee(coord.getKey().getId(), latitude, longitude, date, tourneeId));
+        }
+        return coordonnees;
+    }
+
+
+
+    @ApiMethod(name = "getTourneesByCamion",
+            path = "tourneesByCamion/{id}",
+            httpMethod = ApiMethod.HttpMethod.GET)
+    public List<TTournee> getTTourneeByCamion(@Named("id") long id){
+        List<TTournee> tournees = new ArrayList<TTournee>();
+
+        Query.Filter camionFilter =
+                new Query.FilterPredicate(TTournee.TCAMION_ID_PROPERTY,
+                        Query.FilterOperator.EQUAL, id);
+
+        Query q = new Query(TTournee.TTOURNEE_ENTITY).setFilter(camionFilter);
+
+// Use PreparedQuery interface to retrieve results
+        PreparedQuery pq = ds.prepare(q);
+
+        for (Entity tourneeEntity : pq.asIterable()) {
+            String nom = (String) tourneeEntity.getProperty(TTournee.NOM_PROPERTY);
+            Date dateDebut = (Date) tourneeEntity.getProperty(TTournee.DATE_DEBUT_PROPERTY);
+            Date dateFin = (Date) tourneeEntity.getProperty(TTournee.DATE_DEBUT_PROPERTY);
+            long camionId = (long) tourneeEntity.getProperty(TTournee.TCAMION_ID_PROPERTY);
+            long chauffeurId = (long) tourneeEntity.getProperty(TTournee.CHAUFFEUR_ID_PROPERTY);
+            long firstRipperId = (long) tourneeEntity.getProperty(TTournee.FIRST_RIPPER_ID_PROPERTY);
+            long secondRipperId = (long) tourneeEntity.getProperty(TTournee.SECOND_RIPPER_ID_PROPERTY);
+            tournees.add(new TTournee(tourneeEntity.getKey().getId(), nom, dateDebut, dateFin, camionId, chauffeurId, firstRipperId, secondRipperId));
+        }
+
+        return tournees;
+    }
+
     @ApiMethod(name = "getAllUtilisateurs",
             path = "utilisateurs",
             httpMethod = ApiMethod.HttpMethod.GET)
@@ -244,6 +298,28 @@ public class SictomEndpoint {
             utilisateur = new TUtilisateur(utilisateurEntity.getKey().getId(), nom, prenom, login, mdp);
         } catch (EntityNotFoundException e) {
             e.printStackTrace();
+        }
+
+        return utilisateur;
+    }
+
+    @ApiMethod(name = "getUtilisateurByLoginPassword",
+            path = "utilisateurs/{login}/{password}",
+            httpMethod = ApiMethod.HttpMethod.GET)
+    public TUtilisateur getUtilisateurByLoginPassword(@Named("login") String login, @Named("password") String password){
+        TUtilisateur utilisateur = null;
+
+        Query.Filter filter = new Query.FilterPredicate(TUtilisateur.LOGIN_PROPERTY, Query.FilterOperator.EQUAL, login);
+        Query q = new Query(TUtilisateur.TUTILISATEUR_ENTITY).setFilter(filter);
+        PreparedQuery pq = ds.prepare(q);
+
+        for(Entity entity : pq.asIterable()){
+            String nom = (String) entity.getProperty(TUtilisateur.NOM_PROPERTY);
+            String prenom = (String) entity.getProperty(TUtilisateur.PRENOM_PROPERTY);
+            String lgn = (String) entity.getProperty(TUtilisateur.LOGIN_PROPERTY);
+            String mdp = (String) entity.getProperty(TUtilisateur.MDP_PROPERTY);
+
+            utilisateur = new TUtilisateur(entity.getKey().getId(), nom, prenom, lgn, mdp);
         }
 
         return utilisateur;
