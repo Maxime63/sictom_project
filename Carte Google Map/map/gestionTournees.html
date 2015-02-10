@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="carte.css" />
+    </head>
+    <body>
+        <h1>Gestion des tourn&eacute;es</h1>
+		<div id="MenuCamions">
+			<h2>Camions</h2>
+				<a id="0" href=# onclick="getTournee(this)"></a><br />
+				<a id="1" href=# onclick="getTournee(this)"></a><br />
+				<a id="2" href=# onclick="getTournee(this)"></a><br />
+				<a id="3" href=# onclick="getTournee(this)"></a><br />
+				<a id="4" href=# onclick="getTournee(this)"></a><br />
+				<a id="5" href=# onclick="getTournee(this)"></a><br />
+		</div>
+	
+        <div class="divMap">
+            <div id="map-canvas" class="map"></div>
+			<!--
+       		   <table id="markersT" cellspacing='0' class="markersTable">
+                <thead>
+                    <tr>
+                        <th>N</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table> -->
+        </div>
+		<div id="floatRight">
+			<h4 id="nomTournee"></h4>
+			<div id="contentTournee">
+			<label class="italique">Camion : </label><span id="nomCamion"></span><br /><br />
+			<label class="italique">Chauffeur : </label><span id="nomChauffeur"></span><br /><br />
+			<label class="italique">Ripper 1 : </label><span id="nomRipper1"></span><br /><br />
+			<label class="italique">Ripper 2 : </label><span id="nomRipper2"></span><br /><br />
+			<label class="italique">Heure de d&eacute;part :</label><span id="dateDep"></span><br /><br />
+			<label class="italique">Heure d'arriv&eacute;e : </label><span id="dateArr"></span><br /><br />
+			<b><a href=# onclick="showTournees()">Voir d'autres tourn&eacute;es</a></b><br /><br />
+			<div id="listeTournees"></div>
+			<div>
+		</div>
+		<script type="text/javascript" src="datastore.js"></script>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpq3rbVtsws0uutHoIpNHPTGGPC4Lj5q8"></script>
+		<script type="text/javascript" src="https://apis.google.com/js/client.js?onload=init"></script>
+        <script type="text/javascript" src="map.js"></script>
+		
+   </body>
+</html>
+

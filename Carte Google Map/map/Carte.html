@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="carte.css" />
+    </head>
+    <body>
+        <h1>Carte Google Map</h1>
+        <input type="button" onclick="deleteMarkers();" value="Supprimer les points"/>
+        <div class="divMap">
+            <div id="map-canvas" class="map"></div>
+            <table id="markersT" cellspacing='0' class="markersTable">
+                <thead>
+                    <tr>
+                        <th>N</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpq3rbVtsws0uutHoIpNHPTGGPC4Lj5q8"></script>
+        <script type="text/javascript" src="map.js"></script>
+    </body>
+</html>
