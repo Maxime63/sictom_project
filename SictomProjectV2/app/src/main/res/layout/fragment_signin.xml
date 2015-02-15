@@ -72,12 +72,21 @@
 
     </TableLayout>
 
-    <Button
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Login ou mot de passe incorrect"
+            android:visibility="invisible"
+            android:id="@+id/loginOrPwdMsg"
+            android:layout_gravity="center_horizontal" />
+
+        <Button
         android:text="Se connecter"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:id="@+id/buttonConnexion"
-        style="@style/ButtonTextAuth"
+        style="@style/buttonTextAuth"
         android:background="@drawable/btn_blue"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp" />

@@ -50,4 +50,9 @@ public class TUtilisateur {
     public String getMdp(){
         return mMdp;
     }
+
+    @Override
+    public String toString() {
+        return mNom + " " + mPrenom;
+    }
 }

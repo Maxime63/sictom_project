@@ -4,7 +4,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
     </style>
-    <style name="ButtonTextAuth">
+    <style name="buttonTextAuth">
         <item name="android:textColor">#ffffff</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_margin">3dp</item>
@@ -12,5 +12,15 @@
         <item name="android:shadowRadius">2</item>
         <item name="android:paddingLeft">5dp</item>
         <item name="android:paddingRight">5dp</item>
+    </style>
+
+    <style name="boutonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textSize">@dimen/textSize</item>
+        <item name="android:background">@color/btnBackground</item>
+        <item name="android:layout_marginTop">@dimen/layoutMarginTop</item>
+        <item name="android:layout_gravity">center_horizontal</item>
     </style>
 </resources>

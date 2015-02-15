@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.appspot.speedy_baton_840.sictomApi.model.TCamion;
+import com.appspot.speedy_baton_840.sictomApi.model.TTournee;
+import com.appspot.speedy_baton_840.sictomApi.model.TUtilisateur;
 import com.savajolchauvet.isima.sictomproject.R;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.CurrentPosition;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.FullTrip;
@@ -29,6 +32,12 @@ import java.util.logging.Logger;
 
 public class MainActivity extends ActionBarActivity {
     private static final Logger logger = Logger.getLogger(MainActivity.class.getName());
+
+    private TUtilisateur mChauffeur;
+    private TUtilisateur mFirstRipper;
+    private TUtilisateur mSecondRipper;
+    private TCamion mCamion;
+    private TTournee mTournee;
 
     //Drawer list property
     private DrawerLayout mDrawerLayout;
@@ -100,6 +109,18 @@ public class MainActivity extends ActionBarActivity {
             logger.info("Listner : position catched ==> " + position);
             selectItem(position);
         }
+    }
+
+    public void startMaps(TUtilisateur chauffeur, TUtilisateur firstRipper, TUtilisateur secondRipper,
+                          TCamion camion, TTournee tournee){
+        mChauffeur = chauffeur;
+        mFirstRipper = firstRipper;
+        mSecondRipper = secondRipper;
+        mCamion = camion;
+
+        //Create tournee
+
+        selectItem(0);
     }
 
     private void selectItem(int position){

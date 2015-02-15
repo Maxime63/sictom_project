@@ -10,16 +10,18 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Maxime on 08/02/2015.
+ * Created by Maxime on 10/02/2015.
  */
-public class TUtilisateurEndpointAsyncTask extends AsyncTask<Pair<Context, String>, Void, TUtilisateur> {
+public class GetAllUserEndpointAsyncTask extends AsyncTask<Pair<Context, String>, Void, List<TUtilisateur>> {
 
     private SictomApi sictomApi = null;
     private Context context;
 
-    public TUtilisateurEndpointAsyncTask(){
+    public GetAllUserEndpointAsyncTask(){
         SictomApi.Builder builder = new SictomApi.Builder(AndroidHttp.newCompatibleTransport(),
                 new AndroidJsonFactory(),
                 null);
@@ -27,23 +29,17 @@ public class TUtilisateurEndpointAsyncTask extends AsyncTask<Pair<Context, Strin
     }
 
     @Override
-    protected TUtilisateur doInBackground(Pair<Context, String>... params) {
-        TUtilisateur utilisateur = null;
+    protected List<TUtilisateur> doInBackground(Pair<Context, String>... params) {
+        List<TUtilisateur> users = new ArrayList<>();
 
         context = params[0].first;
-        String paramsRecu = params[0].second;
-
-        String[] paramsIdPwd = paramsRecu.split(";");
-
-        String id = paramsIdPwd[0];
-        String pwd = paramsIdPwd[1];
 
         try {
-            utilisateur = sictomApi.getUtilisateurByLoginPassword(id, pwd).execute();
+            users = sictomApi.getAllUtilisateurs().execute().getItems();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return utilisateur;
+        return users;
     }
 }
