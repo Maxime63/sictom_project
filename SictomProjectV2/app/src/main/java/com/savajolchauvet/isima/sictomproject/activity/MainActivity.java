@@ -1,6 +1,7 @@
 package com.savajolchauvet.isima.sictomproject.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,20 +18,24 @@ import android.widget.ListView;
 import com.appspot.speedy_baton_840.sictomApi.model.TCamion;
 import com.appspot.speedy_baton_840.sictomApi.model.TTournee;
 import com.appspot.speedy_baton_840.sictomApi.model.TUtilisateur;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.savajolchauvet.isima.sictomproject.R;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.CurrentPosition;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.FullTrip;
-import com.savajolchauvet.isima.sictomproject.activity.fragment.MapsGPS;
+import com.savajolchauvet.isima.sictomproject.activity.fragment.Maps;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.Signin;
 import com.savajolchauvet.isima.sictomproject.activity.navigation.CustomDrawerAdapter;
 import com.savajolchauvet.isima.sictomproject.activity.navigation.DrawerItem;
+import com.savajolchauvet.isima.sictomproject.service.MapsService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity{
     private static final Logger logger = Logger.getLogger(MainActivity.class.getName());
 
     private TUtilisateur mChauffeur;
@@ -49,6 +54,8 @@ public class MainActivity extends ActionBarActivity {
 
     private CustomDrawerAdapter mAdapter;
     private List<DrawerItem> mDataList;
+
+    MapFragment mapsFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +102,7 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            selectItem(3);
+            startMaps(null, null, null, null, null);
         }
     }
 
@@ -119,18 +126,27 @@ public class MainActivity extends ActionBarActivity {
         mCamion = camion;
 
         //Create tournee
-
+        mapsFragment = MapFragment.newInstance();
+        Intent mapsService = new Intent(this, MapsService.class);
         selectItem(0);
+        startService(mapsService);
     }
+
+
+    public GoogleMap getMap(){
+        return mapsFragment.getMap();
+    }
+
 
     private void selectItem(int position){
         logger.info("Selected position ==> " + position);
 
         Fragment fragment = null;
 
+
         switch (position){
             case 0:
-                fragment = new MapsGPS();
+                fragment = mapsFragment;
                 break;
             case 1:
                 fragment = new CurrentPosition();
