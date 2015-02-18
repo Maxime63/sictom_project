@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.savajolchauvet.isima.sictomproject.R;
 import com.savajolchauvet.isima.sictomproject.activity.MainActivity;
 
 /**
@@ -20,7 +21,6 @@ public class MapsService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        mMap = ((MainActivity) getApplicationContext()).getMap();
         mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Marker"));

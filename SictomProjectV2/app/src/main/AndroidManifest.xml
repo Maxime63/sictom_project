@@ -26,16 +26,16 @@
             android:value="@string/google_maps_key" />
 
         <service
+            android:name=".service.MapsService"
+            android:exported="false" >
+        </service>        <service
             android:name=".service.CoordPushService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </service>
-        <service
-            android:name=".service.MapsService"
-            android:exported="false" >
-        </service>
+
 
         <activity
             android:name=".activity.MainActivity"
