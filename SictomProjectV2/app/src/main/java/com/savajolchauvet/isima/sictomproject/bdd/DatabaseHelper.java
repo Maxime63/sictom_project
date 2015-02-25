@@ -20,7 +20,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /*SQL for create TCoordonnee table*/
     private static final String CREATE_TABLE_TCOORDONNEE_SQL = "CREATE TABLE " + TCoordonneesDataSource.TABLE_TCOORDONNEE +
             "(" + TCoordonneesDataSource.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + TCoordonneesDataSource.COLUMN_LAT + " DOUBLE NOT NULL," +
-            TCoordonneesDataSource.COLUMN_LNG + " DOUBLE NOT NULL," + TCoordonneesDataSource.COLUMN_DATE + " STRING NOT NULL );";
+            TCoordonneesDataSource.COLUMN_LNG + " DOUBLE NOT NULL," + TCoordonneesDataSource.COLUMN_DATE + " STRING NOT NULL," +
+            TCoordonneesDataSource.COLUMN_TOURNEE_ID + " BIGINT NOT NULL);";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

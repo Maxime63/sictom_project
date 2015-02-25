@@ -30,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 public class Settings extends Fragment {
     private List<TUtilisateur> mUsersList;
     private List<TCamion> mCamionsList;
-    private List<TTournee> mTourneeList;
+    private List<Long> mTypeTourneeList;
     private TUtilisateur mUser;
 
     private TextView mChauffeur;
@@ -66,7 +66,7 @@ public class Settings extends Fragment {
         try {
             mUsersList = new GetAllUserEndpointAsyncTask().execute(new Pair<Context, String>(view.getContext(), null)).get();
             mCamionsList = new GetAllCamionsEndpointAsyncTask().execute(new Pair<Context, String>(view.getContext(), null)).get();
-            mTourneeList = new GetAllTourneeEndpointAsyncTask().execute(new Pair<Context, String>(view.getContext(), null)).get();
+            mTypeTourneeList = new ArrayList<>();
 
             setRippersList(view);
             setCamionList(view);
@@ -88,18 +88,18 @@ public class Settings extends Fragment {
             int ripper1 = mFirstRipperSpinner.getSelectedItemPosition();
             int ripper2 = mSecondRipperSpinner.getSelectedItemPosition();
             int camion = mCamionSpinner.getSelectedItemPosition();
-            int tournee = mTourneeSpinner.getSelectedItemPosition();
+            int typeTournee = mTourneeSpinner.getSelectedItemPosition();
 
-            Bundle args = new Bundle();
-            args.putLong(ConstanteMetier.CHAUFFEUR_ID_PARAM, mUser.getId());
-            args.putLong(ConstanteMetier.FIRST_RIPPER_ID_PARAM, mUsersList.get(ripper1).getId());
-            args.putLong(ConstanteMetier.SECOND_RIPPER_ID_PARAM, mUsersList.get(ripper2).getId());
-            args.putLong(ConstanteMetier.CAMION_ID_PARAM, mCamionsList.get(camion).getId());
-            args.putLong(ConstanteMetier.TOURNEE_ID_PARAM, mTourneeList.get(tournee).getId());
+//            Bundle args = new Bundle();
+//            args.putLong(ConstanteMetier.CHAUFFEUR_ID_PARAM, mUser.getId());
+//            args.putLong(ConstanteMetier.FIRST_RIPPER_ID_PARAM, mUsersList.get(ripper1).getId());
+//            args.putLong(ConstanteMetier.SECOND_RIPPER_ID_PARAM, mUsersList.get(ripper2).getId());
+//            args.putLong(ConstanteMetier.CAMION_ID_PARAM, mCamionsList.get(camion).getId());
+//            args.putLong(ConstanteMetier.TOURNEE_ID_PARAM, mTypeTourneeList.get(typeTournee));
 
             if(getActivity() instanceof MainActivity){
                 MainActivity mainActivity = (MainActivity) getActivity();
-                mainActivity.startMaps(mUser, mUsersList.get(ripper1), mUsersList.get(ripper2), mCamionsList.get(camion), mTourneeList.get(tournee));
+                mainActivity.startMaps(mUser, mUsersList.get(ripper1), mUsersList.get(ripper2), mCamionsList.get(camion), mTypeTourneeList.get(typeTournee));
             }
         }
     }
@@ -128,12 +128,14 @@ public class Settings extends Fragment {
     }
 
     private void setTourneeList(View view) {
-        List<String> listTournee = new ArrayList<>();
+        List<String> typeTourneeList = new ArrayList<>();
 
-        for(TTournee tournee : mTourneeList){
-            listTournee.add(tournee.getNom());
+        for(long i = 1; i <= 8; i++){
+            mTypeTourneeList.add(i);
+            typeTourneeList.add(String.valueOf(i));
         }
-        ArrayAdapter<String> tourneesAdapters = new ArrayAdapter<String>(view.getContext(), R.layout.support_simple_spinner_dropdown_item, listTournee);
+
+        ArrayAdapter<String> tourneesAdapters = new ArrayAdapter<String>(view.getContext(), R.layout.support_simple_spinner_dropdown_item, typeTourneeList);
 
         mTourneeSpinner.setAdapter(tourneesAdapters);
     }

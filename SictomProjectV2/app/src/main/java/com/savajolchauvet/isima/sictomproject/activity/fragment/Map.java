@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.appspot.speedy_baton_840.sictomApi.model.TTournee;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -56,6 +57,19 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
     private Intent mServiceIntent;
 
     private View view;
+
+    private long mTourneeId;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+
+        if(args != null){
+            mTourneeId = args.getLong(ConstanteMetier.TOURNEE_ID_PARAM);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
@@ -139,7 +153,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
                 try {
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);
                     String[] coordData = coord.split(ConstanteMetier.SEPARATOR);
-                    mTCoordonneesDataSource.createCoordonnee(Double.parseDouble(coordData[0]), Double.parseDouble(coordData[1]), simpleDateFormat.parse(coordData[2]));
+                    mTCoordonneesDataSource.createCoordonnee(Double.parseDouble(coordData[0]), Double.parseDouble(coordData[1]), simpleDateFormat.parse(coordData[2]), mTourneeId);
                 } catch (ParseException e) {
                     logger.info("Parse error during insert waiting coords");
                     e.printStackTrace();
@@ -149,7 +163,7 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
             mWaitingCoords = new ArrayList<>();
 
             //Insert new coord
-            mTCoordonneesDataSource.createCoordonnee(lat, lng, new Date(System.currentTimeMillis()));
+            mTCoordonneesDataSource.createCoordonnee(lat, lng, new Date(System.currentTimeMillis()), mTourneeId);
             mTCoordonneesDataSource.close();
         }
         else{
@@ -163,6 +177,10 @@ public class Map extends Fragment implements OnMapReadyCallback, LocationListene
         if(mTCoordonneesDataSource.getNbCoords() >= TCoordonneesDataSource.NB_MAX_COORDS){
             getActivity().startService(mServiceIntent);
         }
+    }
+
+    public void stopRetrieveData(){
+        mLocationManager.removeUpdates(this);
     }
 
     @Override

@@ -18,6 +18,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -127,7 +128,9 @@ public class CoordPushService extends IntentService{
                 for (TCoordonnee coord : coords) {
                     try {
                         DateFormat df = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);
-                        String coordParam = coord.getId() + ";" + coord.getLatitude() + ";" + coord.getLongitude() + ";" + df.format(System.currentTimeMillis());
+                        Date dateCoord = new Date(coord.getDate().getValue());
+
+                        String coordParam = coord.getId() + ConstanteMetier.SEPARATOR + coord.getLatitude() + ConstanteMetier.SEPARATOR + coord.getLongitude() + ConstanteMetier.SEPARATOR + df.format(dateCoord) + ConstanteMetier.SEPARATOR + coord.getTourneeId();
                         logger.info("Start to upload coord ==> " + coordParam);
 
                         String id = new TCoordonneeEndpointAsyncTask(mTCoordonneesDataSource).execute(new Pair<Context, String>(this, coordParam)).get();

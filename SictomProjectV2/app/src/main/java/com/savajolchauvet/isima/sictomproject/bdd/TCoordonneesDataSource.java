@@ -31,7 +31,8 @@ public class TCoordonneesDataSource {
     public static final String COLUMN_LAT = "Latitude";
     public static final String COLUMN_LNG = "Longitude";
     public static final String COLUMN_DATE = "Date";
-    public static final String[] ALL_TCOORDONNEES_COLUMNS = {COLUMN_ID, COLUMN_LAT, COLUMN_LNG, COLUMN_DATE};
+    public static final String COLUMN_TOURNEE_ID = "TourneeId";
+    public static final String[] ALL_TCOORDONNEES_COLUMNS = {COLUMN_ID, COLUMN_LAT, COLUMN_LNG, COLUMN_DATE, COLUMN_TOURNEE_ID};
 
     //Nombre de coordonnées actuellement dans la base locale
     private int nbCoords;
@@ -81,7 +82,7 @@ public class TCoordonneesDataSource {
         return nbCoords;
     }
 
-    public void createCoordonnee(double lat, double lng, Date date){
+    public void createCoordonnee(double lat, double lng, Date date, long tourneeId){
         logger.info("------------>START INSERT COORD<-------------");
         ContentValues values = new ContentValues();
 
@@ -90,6 +91,7 @@ public class TCoordonneesDataSource {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);
         values.put(COLUMN_DATE, simpleDateFormat.format(date));
+        values.put(COLUMN_TOURNEE_ID, tourneeId);
 
         logger.info("Try to insert coord ==> (" + lat + " ; " + lng + ")");
         dbw.insert(TABLE_TCOORDONNEE, null, values);
@@ -132,6 +134,7 @@ public class TCoordonneesDataSource {
             coord.setLatitude(result.getDouble(1));
             coord.setLongitude(result.getDouble(2));
             coord.setDate(datetime);
+            coord.setTourneeId(result.getLong(4));
 
             logger.info("Add coord to list");
             coords.add(coord);

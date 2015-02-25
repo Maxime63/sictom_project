@@ -44,9 +44,10 @@ public class TCoordonneeEndpointAsyncTask extends AsyncTask<Pair<Context, String
         double latitude = Double.valueOf(paramsLatLng[1]);
         double longitude = Double.valueOf(paramsLatLng[2]);
         String date = paramsLatLng[3];
+        long tourneeId = Long.valueOf(paramsLatLng[4]);
 
         try {
-            TCoordonnee coord = sictomApi.insertCoord(date, id, latitude, longitude).execute();
+            TCoordonnee coord = sictomApi.insertCoord(date, id, latitude, longitude, tourneeId).execute();
             if(coord != null){
                 return String.valueOf(coord.getId());
             }

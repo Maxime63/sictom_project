@@ -2,12 +2,14 @@ package com.savajolchauvet.isima.sictomproject.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +21,21 @@ import com.appspot.speedy_baton_840.sictomApi.model.TTournee;
 import com.appspot.speedy_baton_840.sictomApi.model.TUtilisateur;
 import com.savajolchauvet.isima.sictomproject.R;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.CurrentPosition;
+import com.savajolchauvet.isima.sictomproject.activity.fragment.FinishRouting;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.FullTrip;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.Map;
 import com.savajolchauvet.isima.sictomproject.activity.fragment.Signin;
 import com.savajolchauvet.isima.sictomproject.activity.navigation.CustomDrawerAdapter;
 import com.savajolchauvet.isima.sictomproject.activity.navigation.DrawerItem;
+import com.savajolchauvet.isima.sictomproject.constante.ConstanteMetier;
+import com.savajolchauvet.isima.sictomproject.endpoint.InsertTourneeEndpointAsyncTask;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 
@@ -38,6 +47,7 @@ public class MainActivity extends ActionBarActivity{
     private TUtilisateur mSecondRipper;
     private TCamion mCamion;
     private TTournee mTournee;
+    private long mTypeTournee;
 
     //Drawer list property
     private DrawerLayout mDrawerLayout;
@@ -69,6 +79,7 @@ public class MainActivity extends ActionBarActivity{
         mDataList.add(new DrawerItem(getString(R.string.maps_title), R.drawable.ic_maps));
         mDataList.add(new DrawerItem(getString(R.string.current_position_title), R.drawable.ic_current_position));
         mDataList.add(new DrawerItem(getString(R.string.full_trip_title), R.drawable.ic_maps_path));
+        mDataList.add(new DrawerItem(getString(R.string.finish_title), R.drawable.ic_finish));
         mDataList.add(new DrawerItem(getString(R.string.signout_title), R.drawable.ic_logout));
         mDataList.add(new DrawerItem(getString(R.string.exit_title), R.drawable.ic_stop));
 
@@ -96,20 +107,42 @@ public class MainActivity extends ActionBarActivity{
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            startMaps(null, null, null, null, null);
+            selectItem(4);
         }
     }
 
     public void startMaps(TUtilisateur chauffeur, TUtilisateur firstRipper, TUtilisateur secondRipper,
-                          TCamion camion, TTournee tournee){
+                          TCamion camion, long numero){
         mChauffeur = chauffeur;
         mFirstRipper = firstRipper;
         mSecondRipper = secondRipper;
         mCamion = camion;
+        mTypeTournee = numero;
 
         //Create tournee
-        mapFragment = new Map();
-        selectItem(0);
+        DateFormat df = new SimpleDateFormat(ConstanteMetier.STRING_DATE_FORMAT);
+
+
+        String params = mChauffeur.getId() + ConstanteMetier.SEPARATOR +
+                        mFirstRipper.getId() + ConstanteMetier.SEPARATOR +
+                        mSecondRipper.getId() + ConstanteMetier.SEPARATOR +
+                        mCamion.getId() + ConstanteMetier.SEPARATOR +
+                        numero + ConstanteMetier.SEPARATOR +
+                        df.format(new Date(System.currentTimeMillis())) + ConstanteMetier.SEPARATOR +
+                        "Tournee" + numero;
+
+        try {
+            mTournee = new InsertTourneeEndpointAsyncTask().execute(new Pair<Context, String>(this, params)).get();
+            Bundle args = new Bundle();
+            args.putLong(ConstanteMetier.TOURNEE_ID_PARAM, mTournee.getId());
+            mapFragment = new Map();
+            mapFragment.setArguments(args);
+            selectItem(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -129,7 +162,7 @@ public class MainActivity extends ActionBarActivity{
         logger.info("Selected position ==> " + position);
 
         Fragment fragment = null;
-
+        Bundle args = new Bundle();
 
         switch (position){
             case 0:
@@ -140,11 +173,19 @@ public class MainActivity extends ActionBarActivity{
                 break;
             case 2:
                 fragment = new FullTrip();
+                args.putLong(ConstanteMetier.TOURNEE_ID_PARAM, mTournee.getId());
+                fragment.setArguments(args);
                 break;
             case 3:
-                fragment = new Signin();
+                ((Map) mapFragment).stopRetrieveData();
+                fragment = new FinishRouting();
+                args.putLong(ConstanteMetier.TOURNEE_ID_PARAM, mTournee.getId());
+                fragment.setArguments(args);
                 break;
             case 4:
+                fragment = new Signin();
+                break;
+            case 5:
                 break;
             default:
         }

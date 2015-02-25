@@ -10,6 +10,7 @@
     <string name="maps_title">Carte</string>
     <string name="current_position_title">Position courante</string>
     <string name="full_trip_title">Mon trajet</string>
+    <string name="finish_title">Fin</string>
     <string name="signout_title">Déconnexion</string>
     <string name="exit_title">Quitter</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>

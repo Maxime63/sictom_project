@@ -1,7 +1,8 @@
 package com.savajolchauvet.isima.sictomproject.activity.fragment;
 
-import android.app.Activity;
-import android.net.Uri;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,8 +18,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.savajolchauvet.isima.sictomproject.R;
 
 
-public class CurrentPosition extends Fragment implements OnMapReadyCallback {
+public class CurrentPosition extends Fragment implements OnMapReadyCallback, LocationListener {
+    //GPS Configurations
+    public static final long INTERVAL_TIME_UPDATE = 100;
+    public static final float INTERVAL_MIN_DISTANCE_UPDATE = 0;
+
+
     private GoogleMap mMap;
+
+    //GPS
+    private LocationManager mLocationManager;
+
 
     public CurrentPosition() {
         // Required empty public constructor
@@ -38,17 +48,56 @@ public class CurrentPosition extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.full_trip_map);
+        MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.current_position_map);
         mapFragment.getMapAsync(this);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng clermont = new LatLng(45.7796600, 3.0862800);
+
+        if(mLocationManager == null){
+            mLocationManager = (LocationManager) getActivity().getSystemService(getActivity().LOCATION_SERVICE);
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, INTERVAL_TIME_UPDATE, INTERVAL_MIN_DISTANCE_UPDATE, this);
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+
+        StringBuilder msg = new StringBuilder();
+        msg.append("lat : ").append(lat).append("; lng : ").append(lng);
+
+        LatLng newLatLng = new LatLng(lat, lng);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 15));
+
+        mMap.clear();
+
         mMap.addMarker(new MarkerOptions()
-                .title("Clermont-Ferrand")
-                .position(clermont));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(clermont, 15));
+                .title(msg.toString())
+                .position(newLatLng));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mLocationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }
