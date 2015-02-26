@@ -40,8 +40,8 @@ import java.util.logging.Logger;
 public class Map extends Fragment implements OnMapReadyCallback, LocationListener {
     private static final Logger logger = Logger.getLogger(Map.class.getName());
     //GPS Configurations
-    public static final long INTERVAL_TIME_UPDATE = 5000;
-    public static final float INTERVAL_MIN_DISTANCE_UPDATE = 0;
+    public static final long INTERVAL_TIME_UPDATE = 10000;
+    public static final float INTERVAL_MIN_DISTANCE_UPDATE = 5;
 
     // Might be null if Google Play services APK is not available.
     private GoogleMap mMap;

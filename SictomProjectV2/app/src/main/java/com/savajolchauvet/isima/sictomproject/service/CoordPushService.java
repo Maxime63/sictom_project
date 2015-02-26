@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class CoordPushService extends IntentService{
     private static final Logger logger = Logger.getLogger(CoordPushService.class.getName());
 
-    private static final long UPLOAD_TIMER = 100000;//10s
+    private static final long UPLOAD_TIMER = 600000;//10s
     private TCoordonneesDataSource mTCoordonneesDataSource;
     private Timer mTimer;
 

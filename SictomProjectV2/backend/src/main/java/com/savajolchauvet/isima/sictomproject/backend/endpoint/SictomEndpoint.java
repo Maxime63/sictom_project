@@ -118,7 +118,10 @@ public class SictomEndpoint {
             path = "coordsByTournee/{tourneeId}",
             httpMethod = ApiMethod.HttpMethod.GET)
     public List<TCoordonnee> getCoordsByTournee(@Named("tourneeId") long tourneeId){
-        Query query = new Query(TCoordonnee.TCOORDONNE_ENTITY).setAncestor(KeyFactory.createKey(TTournee.TTOURNEE_ENTITY, tourneeId));
+        Query query = new Query(TCoordonnee.TCOORDONNE_ENTITY)
+                        .setAncestor(KeyFactory.createKey(TTournee.TTOURNEE_ENTITY, tourneeId))
+                        .addSort(TCoordonnee.DATE_PROPERTY, Query.SortDirection.ASCENDING);
+
         PreparedQuery pq = ds.prepare(query);
 
         List<TCoordonnee> coords = new ArrayList<>();
@@ -145,16 +148,20 @@ public class SictomEndpoint {
                                    @Named("camionId") long camionId,
                                    @Named("chauffeurId") long chauffeurId,
                                    @Named("firstRipperId") long firstRipperId,
-                                   @Named("secondRipperId") long secondRipperId){
+                                   @Named("secondRipperId") long secondRipperId,
+                                   @Named ("dateFin") String dateFin,
+                                   @Named ("chargeCamion") double chargeCamion){
         try {
             Entity myTournee = new Entity(TTournee.TTOURNEE_ENTITY);
             myTournee.setProperty(TTournee.NUMERO_PROPERTY, numero);
             myTournee.setProperty(TTournee.NOM_PROPERTY, nom);
             myTournee.setProperty(TTournee.DATE_DEBUT_PROPERTY, df.parse(dateDebut));
+            myTournee.setProperty(TTournee.DATE_FIN_PROPERTY, df.parse(dateFin));
             myTournee.setProperty(TTournee.TCAMION_ID_PROPERTY, camionId);
             myTournee.setProperty(TTournee.CHAUFFEUR_ID_PROPERTY, chauffeurId);
             myTournee.setProperty(TTournee.FIRST_RIPPER_ID_PROPERTY, firstRipperId);
             myTournee.setProperty(TTournee.SECOND_RIPPER_ID_PROPERTY, secondRipperId);
+            myTournee.setProperty(TTournee.CHARGE_CAMION_PROPERTY, chargeCamion);
 
             ds.put(myTournee);
 

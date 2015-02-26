@@ -44,7 +44,7 @@ public class InsertTourneeEndpointAsyncTask extends AsyncTask<Pair<Context, Stri
         String nom = tourneeParams[6];
 
         try {
-            return sictomApi.insertTournee(camionId, chauffeurId, date, firstRipperId, nom, numero, secondRipperId).execute();
+            return sictomApi.insertTournee(camionId, 0.0, chauffeurId, date, date, firstRipperId, nom, numero, secondRipperId).execute();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
