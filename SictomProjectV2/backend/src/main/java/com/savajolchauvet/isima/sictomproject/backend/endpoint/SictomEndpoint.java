@@ -285,7 +285,7 @@ public class SictomEndpoint {
             Entity tourneeEntity = ds.get(key);
 
             String nom  = (String) tourneeEntity.getProperty(TTournee.NOM_PROPERTY);
-            long numero = (long) tourneeEntity.getProperty(TTournee.CHARGE_CAMION_PROPERTY);
+            long numero = (long) tourneeEntity.getProperty(TTournee.NUMERO_PROPERTY);
             Date dateDebut = (Date) tourneeEntity.getProperty(TTournee.DATE_DEBUT_PROPERTY);
             Date dateFin = (Date) tourneeEntity.getProperty(TTournee.DATE_FIN_PROPERTY);
             long camionId = (long) tourneeEntity.getProperty(TTournee.TCAMION_ID_PROPERTY);
